@@ -8,8 +8,8 @@ export default function AdminOrders() {
   const orders = useSelector((state) => state.orders.items)
 
   return (
-    <section className="page-shell admin-page">
-      <h1>{t('adminOrders')}</h1>
+    <div className="admin-page-inner">
+      <h1 className="admin-page-title">{t('adminOrders')}</h1>
       {orders.length === 0 ? (
         <div className="empty-state">No orders yet</div>
       ) : (
@@ -45,6 +45,6 @@ export default function AdminOrders() {
           ))}
         </div>
       )}
-    </section>
+    </div>
   )
 }

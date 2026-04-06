@@ -63,10 +63,10 @@ export default function AdminProducts() {
   }
 
   return (
-    <section className="page-shell admin-page">
+    <div className="admin-page-inner">
       <div className="admin-grid">
         <div className="admin-panel">
-          <h1>{t('adminProducts')}</h1>
+          <h1 className="admin-page-title">{t('adminProducts')}</h1>
           <form className="admin-form" onSubmit={handleSubmit}>
             <label>
               {t('products')}
@@ -139,6 +139,6 @@ export default function AdminProducts() {
           )}
         </div>
       </div>
-    </section>
+    </div>
   )
 }

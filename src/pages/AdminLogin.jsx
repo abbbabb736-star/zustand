@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import { authActions } from '../store/store'
 import { useTranslation } from 'react-i18next'
 
-const ADMIN_EMAIL = 'admin@nike.com'
-const ADMIN_PASSWORD = '1234'
+/** Admin kirish: login va parol ikkalasi ham `admin` */
+const ADMIN_LOGIN = 'admin'
+const ADMIN_PASSWORD = 'admin'
 
 export default function AdminLogin() {
   const { t } = useTranslation()
@@ -17,22 +18,29 @@ export default function AdminLogin() {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    const login = email.trim().toLowerCase()
+    if (login === ADMIN_LOGIN && password === ADMIN_PASSWORD) {
       dispatch(authActions.login())
-      navigate('/admin/products')
+      navigate('/admin/dashboard')
     } else {
       setError('Invalid admin credentials')
     }
   }
 
   return (
-    <section className="page-shell auth-page">
+    <section className="page-shell auth-page admin-login-page">
       <div className="auth-card">
         <h1>{t('loginAdmin')}</h1>
+        <p className="admin-login-hint">{t('adminLoginHint')}</p>
         <form onSubmit={handleSubmit} className="auth-form">
           <label>
-            {t('email')}
-            <input value={email} onChange={(event) => setEmail(event.target.value)} />
+            {t('loginField')}
+            <input
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="username"
+              placeholder="admin"
+            />
           </label>
           <label>
             {t('password')}
@@ -40,6 +48,8 @@ export default function AdminLogin() {
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
+              autoComplete="current-password"
+              placeholder="admin"
             />
           </label>
           {error && <p className="field-error">{error}</p>}

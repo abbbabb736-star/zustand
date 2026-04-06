@@ -4,6 +4,8 @@ import { fetchProducts } from '../api/productsApi'
 import ProductCard from '../components/ProductCard'
 import Pagination from '../components/Pagination'
 import Loading from '../components/Loading'
+import HomeEssentials from '../components/HomeEssentials'
+import SiteFooter from '../components/SiteFooter'
 import { useTranslation } from 'react-i18next'
 
 export default function HomePage() {
@@ -28,6 +30,7 @@ export default function HomePage() {
   const womensGear = gearItems.slice(4, 8)
 
   return (
+    <>
     <section className="page-shell">
       <section className="hero-section">
                 <div className="hero-image">
@@ -149,5 +152,11 @@ export default function HomePage() {
         </div>
       </section>
     </section>
+
+    <div className="page-shell page-shell--footer-block">
+      <HomeEssentials />
+    </div>
+    <SiteFooter />
+    </>
   )
 }
