@@ -1,11 +1,11 @@
-import { useSelector, useDispatch } from 'react-redux'
-import { ordersActions } from '../store/store'
 import { useTranslation } from 'react-i18next'
+import { useAppStore } from '../store/store'
 
 export default function AdminOrders() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
-  const orders = useSelector((state) => state.orders.items)
+  const orders = useAppStore((state) => state.orders)
+  const cancelOrder = useAppStore((state) => state.cancelOrder)
+  const deliverOrder = useAppStore((state) => state.deliverOrder)
 
   return (
     <div className="admin-page-inner">
@@ -30,13 +30,13 @@ export default function AdminOrders() {
               <div className="row-actions">
                 <button
                   className="button secondary"
-                  onClick={() => dispatch(ordersActions.cancelOrder(order.id))}
+                  onClick={() => cancelOrder(order.id)}
                 >
                   {t('cancelOrder')}
                 </button>
                 <button
                   className="button secondary"
-                  onClick={() => dispatch(ordersActions.deliverOrder(order.id))}
+                  onClick={() => deliverOrder(order.id)}
                 >
                   {t('deliverOrder')}
                 </button>

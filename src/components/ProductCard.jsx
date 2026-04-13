@@ -1,21 +1,18 @@
 import { Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { cartActions } from '../store/store'
 import { useTranslation } from 'react-i18next'
+import { useAppStore } from '../store/store'
 
 export default function ProductCard({ product }) {
-  const dispatch = useDispatch()
+  const addToCart = useAppStore((state) => state.addToCart)
   const { t } = useTranslation()
 
   const addItem = () => {
-    dispatch(
-      cartActions.addToCart({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        quantity: 1,
-      }),
-    )
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+    })
   }
 
   return (

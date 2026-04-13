@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { useSelector } from 'react-redux'
 import { allProducts } from '../api/productsApi'
 import StatisticsChart from '../components/StatisticsChart'
 import { useTranslation } from 'react-i18next'
+import { useAppStore } from '../store/store'
 
 export default function AdminDashboard() {
   const { t } = useTranslation()
-  const orders = useSelector((state) => state.orders.items)
-  const cartItems = useSelector((state) => state.cart.items)
+  const orders = useAppStore((state) => state.orders)
+  const cartItems = useAppStore((state) => state.cartItems)
 
   const { data: products, isLoading } = useQuery({
     queryKey: ['admin-products-count'],

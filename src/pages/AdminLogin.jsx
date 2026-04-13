@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { authActions } from '../store/store'
 import { useTranslation } from 'react-i18next'
+import { useAppStore } from '../store/store'
 
 /** Admin kirish: login va parol ikkalasi ham `admin` */
 const ADMIN_LOGIN = 'admin'
@@ -10,7 +9,7 @@ const ADMIN_PASSWORD = 'admin'
 
 export default function AdminLogin() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const loginAdmin = useAppStore((state) => state.login)
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -20,7 +19,7 @@ export default function AdminLogin() {
     event.preventDefault()
     const login = email.trim().toLowerCase()
     if (login === ADMIN_LOGIN && password === ADMIN_PASSWORD) {
-      dispatch(authActions.login())
+      loginAdmin()
       navigate('/admin/dashboard')
     } else {
       setError('Invalid admin credentials')

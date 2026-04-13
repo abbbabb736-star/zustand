@@ -1,9 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { authActions } from '../store/store'
 import LanguageSwitcher from './LanguageSwitcher'
 import ThemeToggle from './ThemeToggle'
 import { useTranslation } from 'react-i18next'
+import { useAppStore } from '../store/store'
 
 function JordanMark() {
   return (
@@ -63,15 +62,15 @@ function BagIcon() {
 
 export default function Navbar() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const logoutAdmin = useAppStore((state) => state.logout)
   const navigate = useNavigate()
-  const cartCount = useSelector((state) =>
-    state.cart.items.reduce((sum, item) => sum + item.quantity, 0),
+  const cartCount = useAppStore((state) =>
+    state.cartItems.reduce((sum, item) => sum + item.quantity, 0),
   )
-  const isAdmin = useSelector((state) => state.auth.isAdmin)
+  const isAdmin = useAppStore((state) => state.isAdmin)
 
   const logout = () => {
-    dispatch(authActions.logout())
+    logoutAdmin()
     navigate('/')
   }
 

@@ -1,12 +1,12 @@
-import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { cartActions } from '../store/store'
 import { useTranslation } from 'react-i18next'
+import { useAppStore } from '../store/store'
 
 export default function CartPage() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
-  const items = useSelector((state) => state.cart.items)
+  const items = useAppStore((state) => state.cartItems)
+  const updateQuantity = useAppStore((state) => state.updateQuantity)
+  const removeFromCart = useAppStore((state) => state.removeFromCart)
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
   if (items.length === 0) {
@@ -37,17 +37,15 @@ export default function CartPage() {
                   min="1"
                   value={item.quantity}
                   onChange={(event) =>
-                    dispatch(
-                      cartActions.updateQuantity({
-                        id: item.id,
-                        quantity: Number(event.target.value),
-                      }),
-                    )
+                    updateQuantity({
+                      id: item.id,
+                      quantity: Number(event.target.value),
+                    })
                   }
                 />
                 <button
                   className="button secondary"
-                  onClick={() => dispatch(cartActions.removeFromCart(item.id))}
+                  onClick={() => removeFromCart(item.id)}
                 >
                   {t('cancel')}
                 </button>

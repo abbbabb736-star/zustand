@@ -1,9 +1,9 @@
-import { useContext } from 'react'
-import { ThemeContext } from '../context/ThemeContext'
 import { useTranslation } from 'react-i18next'
+import { useAppStore } from '../store/store'
 
 export default function ThemeToggle({ compact = false }) {
-  const { theme, toggleTheme } = useContext(ThemeContext)
+  const theme = useAppStore((state) => state.theme)
+  const toggleTheme = useAppStore((state) => state.toggleTheme)
   const { t } = useTranslation()
 
   return (

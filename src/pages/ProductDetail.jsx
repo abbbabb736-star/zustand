@@ -1,15 +1,14 @@
 import { useParams, Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
 import { useQuery } from '@tanstack/react-query'
 import { fetchProductById } from '../api/productsApi'
-import { cartActions } from '../store/store'
 import Loading from '../components/Loading'
 import { useTranslation } from 'react-i18next'
+import { useAppStore } from '../store/store'
 
 export default function ProductDetail() {
   const { t } = useTranslation()
   const { id } = useParams()
-  const dispatch = useDispatch()
+  const addToCartItem = useAppStore((state) => state.addToCart)
   const { data: product, isLoading, isError } = useQuery({
     queryKey: ['product', id],
     queryFn: () => fetchProductById(id),
@@ -17,14 +16,12 @@ export default function ProductDetail() {
 
   const addToCart = () => {
     if (!product) return
-    dispatch(
-      cartActions.addToCart({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        quantity: 1,
-      }),
-    )
+    addToCartItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+    })
   }
 
   if (isLoading) return <Loading />

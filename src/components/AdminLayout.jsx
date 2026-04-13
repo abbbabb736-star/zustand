@@ -1,18 +1,17 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { authActions } from '../store/store'
 import { useTranslation } from 'react-i18next'
+import { useAppStore } from '../store/store'
 
 const linkClass = ({ isActive }) =>
   `admin-sidebar__link${isActive ? ' admin-sidebar__link--active' : ''}`
 
 export default function AdminLayout() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const logoutAdmin = useAppStore((state) => state.logout)
   const navigate = useNavigate()
 
   const logout = () => {
-    dispatch(authActions.logout())
+    logoutAdmin()
     navigate('/')
   }
 

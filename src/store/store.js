@@ -1,80 +1,80 @@
-import { configureStore, createSlice } from '@reduxjs/toolkit'
+import { create } from 'zustand'
 
-const authSlice = createSlice({
-  name: 'auth',
-  initialState: { isAdmin: false },
-  reducers: {
-    login(state) {
-      state.isAdmin = true
-    },
-    logout(state) {
-      state.isAdmin = false
-    },
-  },
-})
+const getStoredTheme = () => {
+  if (typeof window === 'undefined') return 'light'
+  return window.localStorage.getItem('nike-theme') || 'light'
+}
 
-const cartSlice = createSlice({
-  name: 'cart',
-  initialState: { items: [] },
-  reducers: {
-    addToCart(state, action) {
-      const existing = state.items.find((item) => item.id === action.payload.id)
+const applyTheme = (theme) => {
+  if (typeof document !== 'undefined') {
+    document.documentElement.dataset.theme = theme
+  }
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem('nike-theme', theme)
+  }
+}
+
+const initialTheme = getStoredTheme()
+applyTheme(initialTheme)
+
+export const useAppStore = create((set) => ({
+  isAdmin: false,
+  cartItems: [],
+  orders: [],
+  theme: initialTheme,
+
+  login: () => set({ isAdmin: true }),
+  logout: () => set({ isAdmin: false }),
+
+  addToCart: (payload) =>
+    set((state) => {
+      const existing = state.cartItems.find((item) => item.id === payload.id)
       if (existing) {
-        existing.quantity += action.payload.quantity
-      } else {
-        state.items.push({ ...action.payload })
+        return {
+          cartItems: state.cartItems.map((item) =>
+            item.id === payload.id ? { ...item, quantity: item.quantity + payload.quantity } : item,
+          ),
+        }
       }
-    },
-    removeFromCart(state, action) {
-      state.items = state.items.filter((item) => item.id !== action.payload)
-    },
-    updateQuantity(state, action) {
-      const item = state.items.find((entry) => entry.id === action.payload.id)
-      if (item) {
-        item.quantity = action.payload.quantity
-      }
-    },
-    clearCart(state) {
-      state.items = []
-    },
-  },
-})
+      return { cartItems: [...state.cartItems, { ...payload }] }
+    }),
+  removeFromCart: (id) =>
+    set((state) => ({ cartItems: state.cartItems.filter((item) => item.id !== id) })),
+  updateQuantity: ({ id, quantity }) =>
+    set((state) => ({
+      cartItems: state.cartItems.map((item) => (item.id === id ? { ...item, quantity } : item)),
+    })),
+  clearCart: () => set({ cartItems: [] }),
 
-const ordersSlice = createSlice({
-  name: 'orders',
-  initialState: { items: [] },
-  reducers: {
-    addOrder(state, action) {
-      state.items.unshift({
-        id: String(Date.now()),
-        status: 'Pending',
-        createdAt: new Date().toISOString(),
-        ...action.payload,
-      })
-    },
-    cancelOrder(state, action) {
-      const order = state.items.find((item) => item.id === action.payload)
-      if (order) {
-        order.status = 'Cancelled'
-      }
-    },
-    deliverOrder(state, action) {
-      const order = state.items.find((item) => item.id === action.payload)
-      if (order) {
-        order.status = 'Delivered'
-      }
-    },
-  },
-})
+  addOrder: (payload) =>
+    set((state) => ({
+      orders: [
+        {
+          id: String(Date.now()),
+          status: 'Pending',
+          createdAt: new Date().toISOString(),
+          ...payload,
+        },
+        ...state.orders,
+      ],
+    })),
+  cancelOrder: (id) =>
+    set((state) => ({
+      orders: state.orders.map((order) =>
+        order.id === id ? { ...order, status: 'Cancelled' } : order,
+      ),
+    })),
+  deliverOrder: (id) =>
+    set((state) => ({
+      orders: state.orders.map((order) =>
+        order.id === id ? { ...order, status: 'Delivered' } : order,
+      ),
+    })),
 
-export const store = configureStore({
-  reducer: {
-    auth: authSlice.reducer,
-    cart: cartSlice.reducer,
-    orders: ordersSlice.reducer,
-  },
-})
-
-export const authActions = authSlice.actions
-export const cartActions = cartSlice.actions
-export const ordersActions = ordersSlice.actions
+  toggleTheme: () =>
+    set((state) => {
+      const nextTheme = state.theme === 'dark' ? 'light' : 'dark'
+      applyTheme(nextTheme)
+      return { theme: nextTheme }
+    }),
+}))

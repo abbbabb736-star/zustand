@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useAppStore } from '../store/store'
 
 export default function ProtectedRoute({ children }) {
-  const isAdmin = useSelector((state) => state.auth.isAdmin)
+  const isAdmin = useAppStore((state) => state.isAdmin)
   return isAdmin ? children : <Navigate to="/admin/login" replace />
 }

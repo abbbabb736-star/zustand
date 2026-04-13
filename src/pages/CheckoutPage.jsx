@@ -1,16 +1,16 @@
 import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { cartActions, ordersActions } from '../store/store'
 import { useTranslation } from 'react-i18next'
+import { useAppStore } from '../store/store'
 
 export default function CheckoutPage() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const addOrder = useAppStore((state) => state.addOrder)
+  const clearCart = useAppStore((state) => state.clearCart)
   const navigate = useNavigate()
-  const items = useSelector((state) => state.cart.items)
+  const items = useAppStore((state) => state.cartItems)
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
   useEffect(() => {
@@ -27,14 +27,12 @@ export default function CheckoutPage() {
       address: Yup.string().required(t('address') + ' is required'),
     }),
     onSubmit: (values) => {
-      dispatch(
-        ordersActions.addOrder({
-          customer: values,
-          items,
-          total,
-        }),
-      )
-      dispatch(cartActions.clearCart())
+      addOrder({
+        customer: values,
+        items,
+        total,
+      })
+      clearCart()
       navigate('/')
     },
   })
